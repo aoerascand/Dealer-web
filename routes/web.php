@@ -7,6 +7,9 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\TransactionController;
 
 Route::get('/', [ProductController::class, 'landingPage'])->name('landing'); // Halaman depan untuk umum
+Route::view('/about', 'about')->name('about');
+Route::get('/kategori', [ProductController::class, 'kategori'])->name('kategori');
+Route::view('/contact', 'contact')->name('contact');
 
 // Authentication Routes
 Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
@@ -15,8 +18,8 @@ Route::get('/register', [AuthController::class, 'showRegistrationForm'])->name('
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
-// Midtrans Callback (No Auth Required, No CSRF)
-Route::post('/api/midtrans/callback', [OrderController::class, 'callback']);
+// Product Detail (Public)
+Route::get('/product/{product}', [ProductController::class, 'show'])->name('product.show');
 
 Route::middleware(['auth'])->group(function () {
     
@@ -42,7 +45,6 @@ Route::middleware(['auth'])->group(function () {
     Route::middleware(['role:pelanggan'])->group(function () {
         Route::post('/checkout', [OrderController::class, 'checkout'])->name('checkout');
         Route::get('/my-orders', [OrderController::class, 'myOrders'])->name('my-orders');
-        Route::get('/orders/{id}/payment', [OrderController::class, 'payment'])->name('orders.payment');
     });
 
     // --- KHUSUS BOS ---

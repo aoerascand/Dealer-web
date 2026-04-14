@@ -9,33 +9,55 @@
 </head>
 <body class="bg-slate-50 font-sans text-gray-800">
     <nav class="bg-slate-900 text-white p-4 shadow-lg sticky top-0 z-50">
-        <div class="container mx-auto flex justify-between items-center">
-            <a href="/" class="text-xl font-bold tracking-wider hover:text-blue-400 transition">DEALER<span class="text-blue-500">AUTO</span></a>
-            <div>
-                @auth
-                    <span class="mr-4 text-sm font-medium text-gray-300">Hello, {{ Auth::user()->name }} ({{ ucfirst(Auth::user()->role) }})</span>
-                    @if(Auth::user()->role == 'admin')
-                        <a href="{{ route('products.index') }}" class="mr-4 hover:text-blue-400 transition">Products</a>
-                    @elseif(Auth::user()->role == 'karyawan')
-                        <a href="{{ route('orders.index') }}" class="mr-4 hover:text-blue-400 transition">Orders</a>
-                    @elseif(Auth::user()->role == 'bos')
-                        <a href="{{ route('boss.index') }}" class="mr-4 hover:text-blue-400 transition">Dashboard</a>
-                    @else
-                        <a href="{{ route('my-orders') }}" class="mr-4 hover:text-blue-400 transition">My Orders</a>
-                    @endif
-                    <form action="{{ route('logout') }}" method="POST" class="inline">
-                        @csrf
-                        <button type="submit" class="bg-red-600 hover:bg-red-700 px-4 py-2 rounded-lg text-sm font-semibold transition shadow-md hover:shadow-lg">Logout</button>
-                    </form>
-                @else
-                    <div class="space-x-2">
-                        <a href="{{ route('login') }}" class="hover:text-blue-400 transition text-sm font-semibold text-gray-200">Login</a>
-                        <a href="{{ route('register') }}" class="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-lg text-sm font-semibold transition shadow-md hover:shadow-lg">Daftar</a>
-                    </div>
-                @endauth
-            </div>
+    <div class="container mx-auto flex items-center justify-between">
+
+        <!-- KIRI: BRAND -->
+        <div>
+            <a href="/" class="text-xl font-bold tracking-wider hover:text-blue-400 transition">
+                DEALER<span class="text-blue-500">AUTO</span>
+            </a>
         </div>
-    </nav>
+
+        <!-- TENGAH: MENU -->
+        <div class="hidden md:flex space-x-6 absolute left-1/2 transform -translate-x-1/2">
+            <a href="{{ route('about') }}" class="text-sm font-semibold text-gray-300 hover:text-blue-400 transition">About</a>
+            <a href="{{ route('kategori') }}" class="text-sm font-semibold text-gray-300 hover:text-blue-400 transition">Kategori</a>
+            <a href="{{ route('contact') }}" class="text-sm font-semibold text-gray-300 hover:text-blue-400 transition">Contact</a>
+        </div>
+
+        <!-- KANAN: AUTH -->
+        <div class="flex items-center space-x-4">
+            @auth
+                <span class="text-sm font-medium text-gray-300">
+                    {{ Auth::user()->name }} ({{ ucfirst(Auth::user()->role) }})
+                </span>
+
+                @if(Auth::user()->role == 'admin')
+                    <a href="{{ route('products.index') }}" class="hover:text-blue-400">Products</a>
+                @elseif(Auth::user()->role == 'karyawan')
+                    <a href="{{ route('orders.index') }}" class="hover:text-blue-400">Orders</a>
+                @elseif(Auth::user()->role == 'bos')
+                    <a href="{{ route('boss.index') }}" class="hover:text-blue-400">Dashboard</a>
+                @else
+                    <a href="{{ route('my-orders') }}" class="hover:text-blue-400">My Orders</a>
+                @endif
+
+                <form action="{{ route('logout') }}" method="POST">
+                    @csrf
+                    <button class="bg-red-600 hover:bg-red-700 px-4 py-2 rounded-lg text-sm font-semibold">
+                        Logout
+                    </button>
+                </form>
+            @else
+                <a href="{{ route('login') }}" class="text-sm font-semibold text-gray-200 hover:text-blue-400">Login</a>
+                <a href="{{ route('register') }}" class="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-lg text-sm font-semibold">
+                    Daftar
+                </a>
+            @endauth
+        </div>
+
+    </div>
+</nav>
     <main class="container mx-auto p-4 mt-6">
         @if(session('success'))
             <div class="bg-green-100 border-l-4 border-green-500 text-green-700 p-4 mb-6 rounded shadow-sm" role="alert">

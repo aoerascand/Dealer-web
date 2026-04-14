@@ -28,7 +28,7 @@
                     <td class="px-4 py-4 text-slate-600">{{ $order->created_at->format('d M Y') }}</td>
                     <td class="px-4 py-4">
                         @if($order->status == 'pending')
-                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-amber-100 text-amber-800">Menunggu Pembayaran</span>
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-amber-100 text-amber-800">Proses Dealer</span>
                         @elseif($order->status == 'completed')
                             <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">Berhasil (Selesai)</span>
                         @else
@@ -37,7 +37,7 @@
                     </td>
                     <td class="px-4 py-4">
                         @if($order->status == 'pending')
-                            <a href="{{ route('orders.payment', $order->id) }}" class="text-sm bg-blue-600 hover:bg-blue-700 text-white px-3 py-1.5 rounded-md font-medium transition-colors">Bayar</a>
+                            <span class="text-sm font-semibold text-amber-600">Hubungi Staff</span>
                         @else
                             <span class="text-sm text-slate-400 italic">Selesai</span>
                         @endif

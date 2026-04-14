@@ -6,8 +6,6 @@ use App\Models\Order;
 use App\Models\Product;
 use App\Models\Transaction;
 use Illuminate\Http\Request;
-use Midtrans\Config;
-use Midtrans\Snap;
 use Illuminate\Support\Facades\Auth;
 
 class OrderController extends Controller
@@ -89,68 +87,6 @@ class OrderController extends Controller
             'status' => 'pending',
         ]);
 
-        Config::$serverKey = config('services.midtrans.serverKey', env('MIDTRANS_SERVER_KEY', 'SB-Mid-server-YOURSERVERKEY'));
-        Config::$isProduction = false;
-        Config::$isSanitized = true;
-        Config::$is3ds = true;
-
-        $params = [
-            'transaction_details' => [
-                'order_id'     => 'ORDER-' . $order->id . '-' . time(),
-                'gross_amount' => (int)$order->total_harga,
-            ],
-            'customer_details' => [
-                'first_name' => Auth::user()->name,
-                'email'      => Auth::user()->email,
-            ],
-        ];
-
-        $snapToken = Snap::getSnapToken($params);
-        $order->update(['snap_token' => $snapToken]);
-
-        return view('orders.pembayaran', compact('order', 'snapToken'));
-    }
-    
-    public function payment($id)
-    {
-        $order = Order::findOrFail($id);
-        if ($order->user_id !== Auth::id()) abort(403);
-        
-        $snapToken = $order->snap_token;
-        return view('orders.pembayaran', compact('order', 'snapToken'));
-    }
-
-    // --- API Hook Midtrans --- //
-    public function callback(Request $request)
-    {
-        $serverKey = config('services.midtrans.serverKey', env('MIDTRANS_SERVER_KEY'));
-        // HMAC validation typically needed:
-        $hashed = hash("sha512", $request->order_id . $request->status_code . $request->gross_amount . $serverKey);
-
-        if ($hashed == $request->signature_key) {
-            if ($request->transaction_status == 'capture' || $request->transaction_status == 'settlement') {
-                $orderIdPattern = explode('-', $request->order_id);
-                $orderIdStr = count($orderIdPattern) > 1 ? $orderIdPattern[1] : null;
-                if (!$orderIdStr) return response()->json(['message' => 'Invalid order id format']);
-                
-                $order = Order::find($orderIdStr);
-                if ($order && $order->status == 'pending') {
-                    $order->update(['status' => 'completed']);
-                    
-                    // Buat record di tabel transaksi
-                    Transaction::create([
-                        'order_id' => $order->id,
-                        'transaction_id_midtrans' => $request->transaction_id,
-                        'payment_type' => $request->payment_type,
-                        'amount' => $request->gross_amount,
-                        'payment_time' => $request->transaction_time,
-                    ]);
-
-                    // Kurangi Stok Motor
-                    $order->product->decrement('stok');
-                }
-            }
-        }
-        return response()->json(['message' => 'Callback handled']);
+        return redirect()->route('my-orders')->with('success', 'Pesanan berhasil dibuat. Silahkan datang ke dealer untuk proses selanjutnya.');
     }
 }

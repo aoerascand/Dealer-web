@@ -10,8 +10,18 @@ class ProductController extends Controller
 {
     public function landingPage()
     {
+        return view('home');
+    }
+
+    public function kategori()
+    {
         $products = Product::where('stok', '>', 0)->get();
-        return view('welcome', compact('products'));
+        return view('kategori', compact('products'));
+    }
+
+    public function show(Product $product)
+    {
+        return view('pelanggan.product_detail', compact('product'));
     }
 
     public function index()

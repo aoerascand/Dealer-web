@@ -11,10 +11,16 @@ use Illuminate\Support\Facades\Auth;
 class OrderController extends Controller
 {
     // --- KHUSUS KARYAWAN --- //
-    public function index()
+    public function dashboard()
     {
-        $orders = Order::with('user', 'product')->latest()->get();
-        return view('karyawan.orders.index', compact('orders'));
+        $orders = Order::with('user', 'product', 'variant')->latest()->take(10)->get();
+        return view('karyawan.dashboard', compact('orders'));
+    }
+
+    public function produk()
+    {
+        $products = Product::with('variants')->get();
+        return view('karyawan.produk', compact('products'));
     }
 
     public function complete($id)
@@ -22,7 +28,14 @@ class OrderController extends Controller
         $order = Order::findOrFail($id);
         if ($order->status == 'pending') {
             $order->update(['status' => 'completed']);
+            
+            // Kurangi stok utama
             $order->product->decrement('stok');
+
+            // Kurangi stok varian jika ada
+            if($order->product_variant_id) {
+                $order->variant->decrement('stok');
+            }
 
             Transaction::create([
                 'order_id' => $order->id,
@@ -37,10 +50,20 @@ class OrderController extends Controller
         return back()->with('error', 'Pesanan ini tidak dapat dirubah.');
     }
 
+    public function cancel($id)
+    {
+        $order = Order::findOrFail($id);
+        if ($order->status == 'pending') {
+            $order->update(['status' => 'gagal']);
+            return back()->with('success', 'Pesanan berhasil dibatalkan / ditandai gagal.');
+        }
+        return back()->with('error', 'Pesanan ini sudah diproses dan tidak dapat dibatalkan.');
+    }
+
     public function create()
     {
-        $products = Product::where('stok', '>', 0)->get();
-        return view('karyawan.orders.create', compact('products'));
+        $products = Product::with('variants')->where('stok', '>', 0)->get();
+        return view('karyawan.entry', compact('products'));
     }
     
     public function store(Request $request)
@@ -57,13 +80,14 @@ class OrderController extends Controller
         Order::create([
             'user_id' => Auth::id(),
             'product_id' => $product->id,
+            'product_variant_id' => $request->product_variant_id, // Untuk warna yang dipilih
             'nama_pembeli' => $request->nama_pembeli,
             'total_harga' => $product->harga,
             'deskripsi_tambahan' => $request->deskripsi_tambahan,
             'status' => 'pending' // Setelah diorder, bisa dicheckout atau dibayar di tempat
         ]);
 
-        return redirect()->route('orders.index')->with('success', 'Pesanan baru berhasil dicatat.');
+        return redirect()->route('staff.dashboard')->with('success', 'Pesanan baru berhasil dicatat.');
     }
 
 
@@ -74,6 +98,16 @@ class OrderController extends Controller
         return view('pelanggan.my-orders', compact('orders'));
     }
 
+    public function receipt(Order $order)
+    {
+        if ($order->user_id != Auth::id() && Auth::user()->role == 'pelanggan') {
+            abort(403, 'Unauthorized access.');
+        }
+
+        $order->load(['product', 'variant', 'transaction']);
+        return view('pelanggan.receipt', compact('order'));
+    }
+
     public function checkout(Request $request)
     {
         $product = Product::findOrFail($request->product_id);
@@ -81,6 +115,7 @@ class OrderController extends Controller
         $order = Order::create([
             'user_id' => Auth::id(),
             'product_id' => $request->product_id,
+            'product_variant_id' => $request->product_variant_id,
             'nama_pembeli' => $request->nama_pembeli ?? Auth::user()->name,
             'total_harga' => $product->harga,
             'deskripsi_tambahan' => $request->deskripsi_tambahan,

@@ -2,14 +2,9 @@
 
 @section('content')
 <div class="bg-white rounded-xl shadow-lg border border-slate-100 p-6">
-    <div class="flex justify-between items-center mb-6">
-        <div>
-            <h2 class="text-2xl font-bold text-slate-800">Manajemen Pesanan</h2>
-            <p class="text-slate-500 text-sm mt-1">Selesaikan transaksi pelanggan yang tertunda.</p>
-        </div>
-        <a href="{{ route('orders.create') }}" class="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2.5 rounded-lg text-sm font-semibold shadow transition-colors block">
-            + Entry Order Baru
-        </a>
+    <div class="mb-6">
+        <h2 class="text-2xl font-bold text-slate-800">Dashboard Karyawan</h2>
+        <p class="text-slate-500 text-sm mt-1">Orderan terbaru dan penyelesaian transaksi pelanggan.</p>
     </div>
 
     <div class="overflow-x-auto">
@@ -28,7 +23,7 @@
                 @forelse ($orders as $order)
                 <tr class="border-b border-slate-100 hover:bg-slate-50 transition-colors">
                     <td class="px-4 py-4 text-slate-700 font-medium">ORD-{{ $order->id }}</td>
-                    <td class="px-4 py-4 text-slate-800">{{ $order->nama_pembeli }} <br><span class="text-xs text-slate-500">Oleh: {{ $order->user->name }}</span></td>
+                    <td class="px-4 py-4 text-slate-800">{{ $order->nama_pembeli }} <br><span class="text-xs text-slate-500">Oleh: {{ $order->user->name ?? 'Guest' }}</span></td>
                     <td class="px-4 py-4 text-slate-700">
                         {{ $order->product->nama_produk ?? 'Deleted Product' }}
                         @if($order->variant)
@@ -47,15 +42,21 @@
                     </td>
                     <td class="px-4 py-4">
                         @if($order->status == 'pending')
-                        <form action="{{ route('transactions.store') }}" method="POST" class="flex gap-2">
-                            @csrf
-                            <input type="hidden" name="order_id" value="{{ $order->id }}">
-                            <select name="payment_type" class="border border-slate-300 rounded text-sm p-1.5 focus:outline-none focus:ring-1 focus:ring-blue-500" required>
-                                <option value="cash">Cash / Di Tempat</option>
-                                <option value="transfer_bank">Transfer Bank</option>
-                            </select>
-                            <button type="submit" class="bg-indigo-600 hover:bg-indigo-700 text-white px-3 py-1.5 rounded text-sm font-medium transition" onclick="return confirm('Tandai pesanan ini lunas secara manual? Stok akan dipotong.')">Selesaikan</button>
-                        </form>
+                        <div class="flex items-center gap-2">
+                            <form action="{{ route('transactions.store') }}" method="POST" class="flex gap-2">
+                                @csrf
+                                <input type="hidden" name="order_id" value="{{ $order->id }}">
+                                <select name="payment_type" class="border border-slate-300 rounded text-sm p-1.5 focus:outline-none focus:ring-1 focus:ring-blue-500" required>
+                                    <option value="cash">Cash / Di Tempat</option>
+                                    <option value="transfer_bank">Transfer Bank</option>
+                                </select>
+                                <button type="submit" class="bg-indigo-600 hover:bg-indigo-700 text-white px-3 py-1.5 rounded text-sm font-medium transition" onclick="return confirm('Tandai pesanan ini lunas secara manual? Stok akan dipotong.')">Selesaikan</button>
+                            </form>
+                            <form action="{{ route('orders.cancel', $order->id) }}" method="POST" class="inline">
+                                @csrf
+                                <button type="submit" class="bg-red-500 hover:bg-red-600 text-white px-3 py-1.5 rounded text-sm font-medium transition" onclick="return confirm('Batalkan pesanan ini? (Tandai Gagal)')">Gagal</button>
+                            </form>
+                        </div>
                         @else
                             <span class="text-sm text-slate-400 italic">No Action Needed</span>
                         @endif

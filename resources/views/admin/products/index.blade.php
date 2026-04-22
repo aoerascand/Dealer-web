@@ -4,7 +4,7 @@
 <div class="bg-white rounded-xl shadow-lg border border-slate-100 p-6">
     <div class="flex justify-between items-center mb-6">
         <h2 class="text-2xl font-bold text-slate-800">Manajemen Produk</h2>
-        <a href="{{ route('products.create') }}" class="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2.5 rounded-lg text-sm font-semibold shadow transition-colors block">
+        <a href="{{ route('products.create') }}" class="bg-green-600 hover:bg-green-700 text-white px-5 py-2.5 rounded-lg text-sm font-semibold shadow transition-colors block">
             + Tambah Motor
         </a>
     </div>

@@ -24,6 +24,9 @@ class TransactionController extends Controller
 
         $order->update(['status' => 'completed']);
         $order->product->decrement('stok');
+        if($order->product_variant_id) {
+            $order->variant->decrement('stok');
+        }
 
         Transaction::create([
             'order_id' => $order->id,

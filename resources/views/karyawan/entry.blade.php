@@ -11,12 +11,23 @@
         @csrf
         <div class="mb-5">
             <label class="block text-sm font-semibold text-slate-700 mb-2">Pilih Motor</label>
-            <select name="product_id" required class="w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none">
-                <option value="">-- Pilih Motor Tersedia --</option>
+            <select name="product_id" required class="w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none" onchange="document.getElementById('hidden_variant_id').value = this.options[this.selectedIndex].getAttribute('data-variant');">
+                <option value="" data-variant="">-- Pilih Motor Tersedia --</option>
                 @foreach($products as $product)
-                    <option value="{{ $product->id }}">{{ $product->nama_produk }} - Rp {{ number_format($product->harga,0,',','.') }} (Stok: {{ $product->stok }})</option>
+                    @if($product->variants->count() > 0)
+                        @foreach($product->variants as $variant)
+                            @if($variant->stok > 0)
+                                <option value="{{ $product->id }}" data-variant="{{ $variant->id }}">{{ $product->nama_produk }} ({{ $variant->warna }}) - Rp {{ number_format($product->harga,0,',','.') }} (Stok: {{ $variant->stok }})</option>
+                            @endif
+                        @endforeach
+                    @else
+                        @if($product->stok > 0)
+                            <option value="{{ $product->id }}" data-variant="">{{ $product->nama_produk }} - Rp {{ number_format($product->harga,0,',','.') }} (Stok: {{ $product->stok }})</option>
+                        @endif
+                    @endif
                 @endforeach
             </select>
+            <input type="hidden" name="product_variant_id" id="hidden_variant_id" value="">
         </div>
 
         <div class="mb-5">

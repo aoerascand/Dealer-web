@@ -78,7 +78,7 @@ class AuthController extends Controller
             case 'admin':
                 return redirect()->route('products.index');
             case 'karyawan':
-                return redirect()->route('orders.index');
+                return redirect()->route('staff.dashboard');
             case 'bos':
                 return redirect()->route('boss.index');
             case 'pelanggan':

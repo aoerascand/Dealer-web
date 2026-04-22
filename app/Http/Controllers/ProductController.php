@@ -39,20 +39,27 @@ class ProductController extends Controller
     {
         $request->validate([
             'nama_produk' => 'required|string|max:255',
-            'stok' => 'required|integer|min:0',
             'harga' => 'required|numeric|min:0',
-            'gambar' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             'deskripsi' => 'nullable|string',
+            'warna' => 'required|string|max:255',
+            'stok_varian' => 'required|integer|min:0',
+            'gambar_varian' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]);
 
-        $data = $request->only('nama_produk', 'stok', 'harga', 'deskripsi');
+        $data = $request->only('nama_produk', 'harga', 'deskripsi');
+        $data['stok'] = 0;
 
-        if($request->hasFile('gambar')){
-            $data['gambar'] = $request->file('gambar')->store('motor', 'public');
-        }
+        $product = Product::create($data);
+        
+        $variantData = [
+            'product_id' => $product->id,
+            'warna' => $request->warna,
+            'stok' => $request->stok_varian,
+            'gambar' => $request->file('gambar_varian')->store('motor/variants', 'public')
+        ];
+        \App\Models\ProductVariant::create($variantData);
 
-        Product::create($data);
-        return redirect()->route('products.index')->with('success', 'Motor berhasil ditambahkan!');
+        return redirect()->route('products.index')->with('success', 'Motor dan varian pertamanya berhasil ditambahkan!');
     }
 
     public function edit(Product $product)
@@ -64,23 +71,53 @@ class ProductController extends Controller
     {
         $request->validate([
             'nama_produk' => 'required|string|max:255',
-            'stok' => 'required|integer|min:0',
             'harga' => 'required|numeric|min:0',
-            'gambar' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             'deskripsi' => 'nullable|string',
         ]);
 
-        $data = $request->only('nama_produk', 'stok', 'harga', 'deskripsi');
-
-        if($request->hasFile('gambar')){
-            if($product->gambar) {
-                Storage::disk('public')->delete($product->gambar);
-            }
-            $data['gambar'] = $request->file('gambar')->store('motor', 'public');
-        }
+        $data = $request->only('nama_produk', 'harga', 'deskripsi');
 
         $product->update($data);
         return redirect()->route('products.index')->with('success', 'Data motor berhasil diperbarui!');
+    }
+
+    public function storeVariant(Request $request, Product $product)
+    {
+        $request->validate([
+            'warna' => 'required|string|max:255',
+            'stok' => 'required|integer|min:0',
+            'gambar' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+        ]);
+
+        $data = $request->only('warna', 'stok');
+        $data['product_id'] = $product->id;
+
+        if ($request->hasFile('gambar')) {
+            $data['gambar'] = $request->file('gambar')->store('motor/variants', 'public');
+        }
+
+        \App\Models\ProductVariant::create($data);
+        return back()->with('success', 'Varian warna berhasil ditambahkan!');
+    }
+
+    public function destroyVariant(\App\Models\ProductVariant $variant)
+    {
+        if ($variant->gambar) {
+            Storage::disk('public')->delete($variant->gambar);
+        }
+        $variant->delete();
+        return back()->with('success', 'Varian warna berhasil dihapus!');
+    }
+
+    public function updateVariant(Request $request, \App\Models\ProductVariant $variant)
+    {
+        $request->validate([
+            'warna' => 'required|string|max:255',
+            'stok' => 'required|integer|min:0',
+        ]);
+        
+        $variant->update($request->only('warna', 'stok'));
+        return back()->with('success', 'Data varian berhasil diperbarui!');
     }
 
     public function destroy(Product $product)

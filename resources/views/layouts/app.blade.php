@@ -14,15 +14,15 @@
         <!-- KIRI: BRAND -->
         <div>
             <a href="/" class="text-xl font-bold tracking-wider hover:text-blue-400 transition">
-                DEALER<span class="text-blue-500">AUTO</span>
+                DEALER<span class="text-green-500">MOTOR</span>
             </a>
         </div>
 
         <!-- TENGAH: MENU -->
         <div class="hidden md:flex space-x-6 absolute left-1/2 transform -translate-x-1/2">
-            <a href="{{ route('about') }}" class="text-sm font-semibold text-gray-300 hover:text-blue-400 transition">About</a>
-            <a href="{{ route('kategori') }}" class="text-sm font-semibold text-gray-300 hover:text-blue-400 transition">Kategori</a>
-            <a href="{{ route('contact') }}" class="text-sm font-semibold text-gray-300 hover:text-blue-400 transition">Contact</a>
+            <a href="{{ route('about') }}" class="text-sm font-semibold text-gray-300 hover:text-green-400 transition">About</a>
+            <a href="{{ route('kategori') }}" class="text-sm font-semibold text-gray-300 hover:text-green-400 transition">Katalog</a>
+            <a href="{{ route('contact') }}" class="text-sm font-semibold text-gray-300 hover:text-green-400 transition">Contact</a>
         </div>
 
         <!-- KANAN: AUTH -->
@@ -33,13 +33,16 @@
                 </span>
 
                 @if(Auth::user()->role == 'admin')
-                    <a href="{{ route('products.index') }}" class="hover:text-blue-400">Products</a>
+                    <a href="{{ route('products.index') }}" class="text-sm font-semibold text-gray-300 hover:text-green-400 transition">Products</a>
                 @elseif(Auth::user()->role == 'karyawan')
-                    <a href="{{ route('orders.index') }}" class="hover:text-blue-400">Orders</a>
+                    <a href="{{ route('staff.dashboard') }}" class="text-sm font-semibold text-gray-300 hover:text-green-400 transition">Dashboard</a>
+                    <a href="{{ route('staff.produk') }}" class="text-sm font-semibold text-gray-300 hover:text-green-400 transition">Produk</a>
+                    <a href="{{ route('staff.entry') }}" class="text-sm font-semibold text-gray-300 hover:text-green-400 transition">Entry Order</a>
                 @elseif(Auth::user()->role == 'bos')
-                    <a href="{{ route('boss.index') }}" class="hover:text-blue-400">Dashboard</a>
+                    <a href="{{ route('boss.index') }}" class="text-sm font-semibold text-gray-300 hover:text-green-400 transition">Dashboard</a>
+                    <a href="{{ route('boss.laporan') }}" class="text-sm font-semibold text-gray-300 hover:text-green-400 transition">Laporan</a>
                 @else
-                    <a href="{{ route('my-orders') }}" class="hover:text-blue-400">My Orders</a>
+                    <a href="{{ route('my-orders') }}" class="text-sm font-semibold text-gray-300 hover:text-green-400 transition">My Orders</a>
                 @endif
 
                 <form action="{{ route('logout') }}" method="POST">
@@ -49,8 +52,8 @@
                     </button>
                 </form>
             @else
-                <a href="{{ route('login') }}" class="text-sm font-semibold text-gray-200 hover:text-blue-400">Login</a>
-                <a href="{{ route('register') }}" class="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-lg text-sm font-semibold">
+                <a href="{{ route('login') }}" class="text-sm font-semibold text-gray-200 hover:text-green-400">Login</a>
+                <a href="{{ route('register') }}" class="bg-green-600 hover:bg-green-700 px-4 py-2 rounded-lg text-sm font-semibold">
                     Daftar
                 </a>
             @endauth

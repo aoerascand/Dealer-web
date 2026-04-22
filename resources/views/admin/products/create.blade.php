@@ -16,23 +16,31 @@
                 class="w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none">
         </div>
 
-        <div class="grid grid-cols-2 gap-5 mb-5">
-            <div>
-                <label class="block text-sm font-semibold text-slate-700 mb-2">Stok Unit</label>
-                <input type="number" name="stok" value="{{ old('stok') }}" required min="0" placeholder="0"
-                    class="w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none">
+        <div class="mb-5 p-5 bg-blue-50 border border-blue-100 rounded-lg">
+            <h3 class="font-bold text-blue-800 mb-3 text-lg">Varian Warna Pertama</h3>
+            <div class="grid grid-cols-2 gap-4 mb-4">
+                <div>
+                    <label class="block text-sm font-semibold text-slate-700 mb-2">Nama Warna</label>
+                    <input type="text" name="warna" required placeholder="Cth: Merah Doff" value="{{ old('warna') }}"
+                        class="w-full px-4 py-2 border border-blue-200 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none">
+                </div>
+                <div>
+                    <label class="block text-sm font-semibold text-slate-700 mb-2">Stok Warna Ini</label>
+                    <input type="number" name="stok_varian" required min="0" placeholder="0" value="{{ old('stok_varian') }}"
+                        class="w-full px-4 py-2 border border-blue-200 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none">
+                </div>
             </div>
             <div>
-                <label class="block text-sm font-semibold text-slate-700 mb-2">Harga Jual (Rp)</label>
-                <input type="number" name="harga" value="{{ old('harga') }}" required min="0" placeholder="e.g. 25000000"
-                    class="w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none">
+                <label class="block text-sm font-semibold text-slate-700 mb-2">Gambar Khusus Warna Ini</label>
+                <input type="file" name="gambar_varian" accept="image/*" required
+                    class="w-full p-2 border border-blue-200 rounded-lg text-slate-600 bg-white">
             </div>
         </div>
-
+        
         <div class="mb-5">
-            <label class="block text-sm font-semibold text-slate-700 mb-2">Gambar Motor</label>
-            <input type="file" name="gambar" accept="image/*"
-                class="w-full p-2 border border-slate-300 rounded-lg text-slate-600 bg-slate-50">
+            <label class="block text-sm font-semibold text-slate-700 mb-2">Harga Jual (Rp)</label>
+            <input type="number" name="harga" value="{{ old('harga') }}" required min="0" placeholder="e.g. 25000000"
+                class="w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none">
         </div>
 
         <div class="mb-8">

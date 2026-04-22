@@ -26,16 +26,21 @@ Route::middleware(['auth'])->group(function () {
     // --- KHUSUS ADMIN ---
     Route::middleware(['role:admin'])->prefix('admin')->group(function () {
         Route::resource('products', ProductController::class);
+        Route::post('products/{product}/variants', [ProductController::class, 'storeVariant'])->name('products.variants.store');
+        Route::put('variants/{variant}', [ProductController::class, 'updateVariant'])->name('variants.update');
+        Route::delete('variants/{variant}', [ProductController::class, 'destroyVariant'])->name('variants.destroy');
     });
 
     // --- KHUSUS KARYAWAN ---
     Route::middleware(['role:karyawan'])->prefix('staff')->group(function () {
-        Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
-        Route::post('/orders/{id}/complete', [OrderController::class, 'complete'])->name('orders.complete');
-        // Karyawan entry order baru
-        Route::get('/orders/create', [OrderController::class, 'create'])->name('orders.create');
-        Route::post('/orders', [OrderController::class, 'store'])->name('orders.store');
+        Route::get('/dashboard', [OrderController::class, 'dashboard'])->name('staff.dashboard');
+        Route::get('/produk', [OrderController::class, 'produk'])->name('staff.produk');
         
+        Route::get('/entry', [OrderController::class, 'create'])->name('staff.entry');
+        Route::post('/entry', [OrderController::class, 'store'])->name('staff.store');
+        
+        Route::post('/orders/{id}/complete', [OrderController::class, 'complete'])->name('orders.complete');
+        Route::post('/orders/{id}/cancel', [OrderController::class, 'cancel'])->name('orders.cancel');
         // Transaksi manual / bayar di tempat
         Route::post('/transactions', [TransactionController::class, 'store'])->name('transactions.store');
     });
@@ -45,11 +50,13 @@ Route::middleware(['auth'])->group(function () {
     Route::middleware(['role:pelanggan'])->group(function () {
         Route::post('/checkout', [OrderController::class, 'checkout'])->name('checkout');
         Route::get('/my-orders', [OrderController::class, 'myOrders'])->name('my-orders');
+        Route::get('/my-orders/{order}/receipt', [OrderController::class, 'receipt'])->name('orders.receipt');
     });
 
     // --- KHUSUS BOS ---
     Route::middleware(['role:bos'])->group(function () {
         Route::get('/boss/dashboard', [DashboardController::class, 'index'])->name('boss.index');
+        Route::get('/boss/laporan', [DashboardController::class, 'laporan'])->name('boss.laporan');
     });
 
 });

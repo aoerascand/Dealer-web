@@ -11,19 +11,22 @@
         @forelse($products as $product)
         <div class="bg-white rounded-2xl shadow-lg border border-slate-100 overflow-hidden group hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
             <div class="h-56 bg-slate-200 overflow-hidden relative">
-                @if($product->gambar)
-                    <img src="{{ asset('storage/' . $product->gambar) }}" alt="{{ $product->nama_produk }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                @if($product->default_gambar)
+                    <img src="{{ asset('storage/' . $product->default_gambar) }}" alt="{{ $product->nama_produk }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
                 @else
                     <div class="w-full h-full flex items-center justify-center text-slate-400">Tidak Ada Gambar</div>
                 @endif
-                <div class="absolute top-4 right-4 bg-white/90 backdrop-blur text-blue-800 font-bold px-3 py-1 rounded-full shadow-sm text-sm">
-                    Stok: {{ $product->stok }}
+                <div class="absolute top-4 right-4 bg-white/90 backdrop-blur text-green-800 font-bold px-3 py-1 rounded-full shadow-sm text-sm">
+                    Stok: {{ $product->total_stok }}
                 </div>
             </div>
             
             <div class="p-6">
                 <h3 class="text-xl font-bold text-slate-800 mb-2">{{ $product->nama_produk }}</h3>
-                <p class="text-2xl font-black text-blue-600 mb-4">Rp {{ number_format($product->harga, 0, ',', '.') }}</p>
+                <!-- <div class="text-yellow-400 text-sm mt-1">
+                    ★★★★☆ <span class="text-slate-400 text-xs">(4.2)</span>
+                </div> -->
+                <p class="text-2xl font-black text-green-700 mb-4">Rp {{ number_format($product->harga, 0, ',', '.') }}</p>
                 <p class="text-slate-600 text-sm mb-6 line-clamp-2 h-10">{{ $product->deskripsi }}</p>
                 
                 <a href="{{ route('product.show', $product->id) }}" class="w-full bg-slate-900 hover:bg-black text-white font-semibold py-3 px-4 rounded-xl shadow transition-colors block text-center">

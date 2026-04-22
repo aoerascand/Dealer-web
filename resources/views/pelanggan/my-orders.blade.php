@@ -23,7 +23,12 @@
                 @forelse ($orders as $order)
                 <tr class="border-b border-slate-100 hover:bg-slate-50 transition-colors">
                     <td class="px-4 py-4 text-slate-700 font-medium">ORD-{{ $order->id }}</td>
-                    <td class="px-4 py-4 text-slate-800">{{ $order->product->nama_produk ?? 'Deleted Product' }}</td>
+                    <td class="px-4 py-4 text-slate-800">
+                        {{ $order->product->nama_produk ?? 'Deleted Product' }}
+                        @if($order->variant)
+                            <br><span class="text-xs text-blue-600 font-semibold">Warna: {{ $order->variant->warna }}</span>
+                        @endif
+                    </td>
                     <td class="px-4 py-4 text-slate-800 font-semibold">Rp {{ number_format($order->total_harga, 0, ',', '.') }}</td>
                     <td class="px-4 py-4 text-slate-600">{{ $order->created_at->format('d M Y') }}</td>
                     <td class="px-4 py-4">
@@ -37,9 +42,11 @@
                     </td>
                     <td class="px-4 py-4">
                         @if($order->status == 'pending')
-                            <span class="text-sm font-semibold text-amber-600">Hubungi Staff</span>
+                            <span class="text-sm font-semibold text-amber-600 block mb-1">Hubungi Staff</span>
+                            <a href="{{ route('orders.receipt', $order->id) }}" class="inline-flex items-center text-xs font-medium bg-blue-50 text-blue-600 px-2.5 py-1 rounded border border-blue-200 hover:bg-blue-100 transition">Lihat Struk</a>
                         @else
-                            <span class="text-sm text-slate-400 italic">Selesai</span>
+                            <span class="text-sm text-slate-400 italic block mb-1">Selesai</span>
+                            <a href="{{ route('orders.receipt', $order->id) }}" class="inline-flex items-center text-xs font-medium bg-blue-50 text-blue-600 px-2.5 py-1 rounded border border-blue-200 hover:bg-blue-100 transition">Lihat Struk</a>
                         @endif
                     </td>
                 </tr>

@@ -81,6 +81,6 @@ class DashboardController extends Controller
                             ->paginate(20)
                             ->withQueryString();
 
-        return view('bos.laporan', compact('transactions', 'filter'));
+        return view('laporan.index', compact('transactions', 'filter'));
     }
 }

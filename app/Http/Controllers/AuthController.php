@@ -80,7 +80,7 @@ class AuthController extends Controller
             case 'karyawan':
                 return redirect()->route('staff.dashboard');
             case 'bos':
-                return redirect()->route('boss.index');
+                return redirect()->route('dashboard');
             case 'pelanggan':
                 return redirect('/');
             default:

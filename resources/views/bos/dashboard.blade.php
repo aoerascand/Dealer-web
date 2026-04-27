@@ -10,7 +10,7 @@
     </div>
     <div class="print:hidden flex flex-wrap items-center gap-3 w-full md:w-auto">
         <!-- Filter Form -->
-        <form method="GET" action="{{ route('boss.index') }}" class="flex bg-white shadow-sm border border-slate-200 rounded-lg p-1 overflow-x-auto w-full md:w-auto">
+        <form method="GET" action="{{ route('dashboard') }}" class="flex bg-white shadow-sm border border-slate-200 rounded-lg p-1 overflow-x-auto w-full md:w-auto">
             <button type="submit" name="filter" value="today" class="px-4 py-2 text-sm font-medium rounded-md whitespace-nowrap {{ $filter == 'today' ? 'bg-blue-100 text-blue-700' : 'text-slate-600 hover:bg-slate-50' }}">Hari Ini</button>
             <button type="submit" name="filter" value="month" class="px-4 py-2 text-sm font-medium rounded-md whitespace-nowrap {{ $filter == 'month' ? 'bg-blue-100 text-blue-700' : 'text-slate-600 hover:bg-slate-50' }}">Bulan Ini</button>
             <button type="submit" name="filter" value="year" class="px-4 py-2 text-sm font-medium rounded-md whitespace-nowrap {{ $filter == 'year' ? 'bg-blue-100 text-blue-700' : 'text-slate-600 hover:bg-slate-50' }}">Tahun Ini</button>

@@ -8,41 +8,52 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body class="bg-slate-50 font-sans text-gray-800">
-    <nav class="bg-slate-900 text-white p-4 shadow-lg sticky top-0 z-50">
+  <nav class="bg-slate-900 text-white p-4 shadow-lg sticky top-0 z-50">
     <div class="container mx-auto flex items-center justify-between">
 
-        <!-- KIRI: BRAND -->
-        <div>
-            <a href="/" class="text-xl font-bold tracking-wider hover:text-blue-400 transition">
-                DEALER<span class="text-green-500">MOTOR</span>
-            </a>
+        <!-- BRAND -->
+        <a href="/" class="text-xl font-bold tracking-wider hover:text-blue-400 transition">
+            DEALER<span class="text-green-500">MOTOR</span>
+        </a>
+
+        <!-- MENU TENGAH -->
+        <div class="hidden md:flex space-x-6">
+            <a href="{{ route('about') }}" class="text-sm font-semibold text-gray-300 hover:text-green-400">About</a>
+            <a href="{{ route('kategori') }}" class="text-sm font-semibold text-gray-300 hover:text-green-400">Katalog</a>
+            <a href="{{ route('contact') }}" class="text-sm font-semibold text-gray-300 hover:text-green-400">Contact</a>
         </div>
 
-        <!-- TENGAH: MENU -->
-        <div class="hidden md:flex space-x-6 absolute left-1/2 transform -translate-x-1/2">
-            <a href="{{ route('about') }}" class="text-sm font-semibold text-gray-300 hover:text-green-400 transition">About</a>
-            <a href="{{ route('kategori') }}" class="text-sm font-semibold text-gray-300 hover:text-green-400 transition">Katalog</a>
-            <a href="{{ route('contact') }}" class="text-sm font-semibold text-gray-300 hover:text-green-400 transition">Contact</a>
-        </div>
-
-        <!-- KANAN: AUTH -->
+        <!-- KANAN -->
         <div class="flex items-center space-x-4">
+
             @auth
-                <span class="text-sm font-medium text-gray-300">
+                <span class="text-sm text-gray-300">
                     {{ Auth::user()->name }} ({{ ucfirst(Auth::user()->role) }})
                 </span>
 
+                {{-- ADMIN --}}
                 @if(Auth::user()->role == 'admin')
-                    <a href="{{ route('products.index') }}" class="text-sm font-semibold text-gray-300 hover:text-green-400 transition">Products</a>
-                @elseif(Auth::user()->role == 'karyawan')
-                    <a href="{{ route('staff.dashboard') }}" class="text-sm font-semibold text-gray-300 hover:text-green-400 transition">Dashboard</a>
-                    <a href="{{ route('staff.produk') }}" class="text-sm font-semibold text-gray-300 hover:text-green-400 transition">Produk</a>
-                    <a href="{{ route('staff.entry') }}" class="text-sm font-semibold text-gray-300 hover:text-green-400 transition">Entry Order</a>
-                @elseif(Auth::user()->role == 'bos')
-                    <a href="{{ route('boss.index') }}" class="text-sm font-semibold text-gray-300 hover:text-green-400 transition">Dashboard</a>
-                    <a href="{{ route('boss.laporan') }}" class="text-sm font-semibold text-gray-300 hover:text-green-400 transition">Laporan</a>
-                @else
-                    <a href="{{ route('my-orders') }}" class="text-sm font-semibold text-gray-300 hover:text-green-400 transition">My Orders</a>
+                <a href="{{ route('products.index') }}" class="nav-link">Products</a>
+                <a href="{{ route('employees.index') }}" class="nav-link">Karyawan</a>
+                <a href="{{ route('laporan') }}" class="nav-link">Laporan</a>
+                @endif
+
+                {{-- KARYAWAN --}}
+                @if(Auth::user()->role == 'karyawan')
+                    <a href="{{ route('staff.dashboard') }}" class="nav-link">Dashboard</a>
+                    <a href="{{ route('staff.produk') }}" class="nav-link">Produk</a>
+                    <a href="{{ route('staff.entry') }}" class="nav-link">Entry Order</a>
+                @endif
+
+                {{-- BOS --}}
+                @if(Auth::user()->role == 'bos')
+                    <a href="{{ route('dashboard') }}" class="nav-link">Dashboard</a>
+                    <a href="{{ route('laporan') }}" class="nav-link">Laporan</a>
+                @endif
+
+                {{-- DEFAULT USER --}}
+                @if(!in_array(Auth::user()->role, ['admin','karyawan','bos']))
+                    <a href="{{ route('my-orders') }}" class="nav-link">My Orders</a>
                 @endif
 
                 <form action="{{ route('logout') }}" method="POST">
@@ -51,14 +62,15 @@
                         Logout
                     </button>
                 </form>
+
             @else
                 <a href="{{ route('login') }}" class="text-sm font-semibold text-gray-200 hover:text-green-400">Login</a>
                 <a href="{{ route('register') }}" class="bg-green-600 hover:bg-green-700 px-4 py-2 rounded-lg text-sm font-semibold">
                     Daftar
                 </a>
             @endauth
-        </div>
 
+        </div>
     </div>
 </nav>
     <main class="container mx-auto p-4 mt-6">

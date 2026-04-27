@@ -5,6 +5,7 @@ use App\Http\Controllers\OrderController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\TransactionController;
+use App\Http\Controllers\EmployeeController;
 
 Route::get('/', [ProductController::class, 'landingPage'])->name('landing'); // Halaman depan untuk umum
 Route::view('/about', 'about')->name('about');
@@ -29,6 +30,7 @@ Route::middleware(['auth'])->group(function () {
         Route::post('products/{product}/variants', [ProductController::class, 'storeVariant'])->name('products.variants.store');
         Route::put('variants/{variant}', [ProductController::class, 'updateVariant'])->name('variants.update');
         Route::delete('variants/{variant}', [ProductController::class, 'destroyVariant'])->name('variants.destroy');
+         Route::resource('employees', EmployeeController::class);
     });
 
     // --- KHUSUS KARYAWAN ---
@@ -53,10 +55,12 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/my-orders/{order}/receipt', [OrderController::class, 'receipt'])->name('orders.receipt');
     });
 
-    // --- KHUSUS BOS ---
-    Route::middleware(['role:bos'])->group(function () {
-        Route::get('/boss/dashboard', [DashboardController::class, 'index'])->name('boss.index');
-        Route::get('/boss/laporan', [DashboardController::class, 'laporan'])->name('boss.laporan');
-    });
+    Route::middleware(['auth', 'role:admin,bos'])->group(function () {
+    Route::get('/laporan', [DashboardController::class, 'laporan'])->name('laporan');
 
+});
+
+    Route::middleware(['auth', 'role:bos'])->group(function () {
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+});
 });
